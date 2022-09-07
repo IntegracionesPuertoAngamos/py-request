@@ -1,22 +1,28 @@
 import requests, logging
 from datetime import datetime
-#Declara un tipo de formato a la fecha 
+
+# Función de ayuda para obtener una instancia del tiempo en formato YYYY-MM-DD HH:MM:SS
 def get_time_instance():
   now = datetime.now()
   format = "%Y-%m-%d %H:%M:%S"
   return now.strftime(format)
-# Se declara la url de "aut" y "usuario"
+  
+# Declaramos la url de autenticación y el objeto usuario
 url = "https://navisq.puertoangamos.cl/APIWsPortAngTatc/Auth/authenticate"
+# Las credenciales se encuentran en la Guía de Integración
 obj = {'username': 'username', 'password': 'password'}
 
-#Envia la de peticion de "Post"
+# Enviamos la peticion mediante el método POST
 response = requests.post(url, json = obj)
-#Obtiene el token
+
+# Obtenemos el token de autorización
 token = response.json()['token']
-#Se declara el metodo de "EnviarTatc" y se da un objeto vacio
+
+# Reutilizamos la variable Url e inicializamos con el enpdoint EnviarTatc
 url = "https://navisq.puertoangamos.cl/APIWsPortAngTatc/PortAngTatc/EnviarTatc"
 obj = {}
-#Envia el objeto como json
+
+# Reutilizamos el objeto para llenar con datos del TATC
 obj = {
   'dcNumeroTatc':             '100001127',
   'dcOperadorTatc':           'C20',
@@ -42,13 +48,15 @@ obj = {
   'dgEmisorBl':               'Navis',
   'dfLiberacion':             '2022-02-01 08:00:00'
 }
-#Manda la Autorizacion con el metodo post e imprime el response
+
+# Enviamos nuevamente la petición mediante el método POST a la nueva url e imprimimos la respuesta por consola
 response = requests.post(url, json = obj, headers = {"Authorization": "Bearer " + token})
 print(response.text)
-#genera archivo de loggin y establece el formato 
+
+# Generamos un archivo de log
 logging.basicConfig(filename = 'logs/logTATC-{}.log'.format(get_time_instance()), level = logging.INFO)
 
-#Muestra un estado de acuerdo al "response"
+# Ingresamos la respuesta dada por el servidor
 if response.status_code == 400 or response.text.__contains__("E"):
   logging.error(response.text)
 else:
