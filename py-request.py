@@ -1,4 +1,4 @@
-import requests, logging
+import os, requests, logging
 from datetime import datetime
 
 # Función de ayuda para obtener una instancia del tiempo en formato YYYY-MM-DD HH:MM:SS
@@ -54,6 +54,7 @@ response = requests.post(url, json = obj, headers = {"Authorization": "Bearer " 
 print(response.text)
 
 # Generamos un archivo de log
+os.mkdir('logs')
 logging.basicConfig(filename = 'logs/logTATC-{}.log'.format(get_time_instance()), level = logging.INFO)
 
 # Ingresamos la respuesta dada por el servidor
