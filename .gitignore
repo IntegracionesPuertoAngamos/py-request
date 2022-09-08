@@ -186,4 +186,4 @@ cython_debug/
 *.code-workspace
 
 # Logs
-logs/
+logs/**
